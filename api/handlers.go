@@ -18,37 +18,44 @@ func Convert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := fitz.NewFromReader(r.Body)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+	select {
+	case <-r.Context().Done():
+		http.Error(w, "context cancelled", http.StatusInternalServerError)
 		return
-	}
 
-	rgba, err := doc.Image(0)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	switch format {
-	case "png":
-		err = png.Encode(w, rgba)
-	case "jpeg":
-		err = jpeg.Encode(w, rgba, &jpeg.Options{
-			Quality: 90,
-		})
-	case "webp":
-		err = webp.Encode(w, rgba, &webp.Options{
-			Quality: 85,
-		})
 	default:
-		http.Error(w, "invalid format", http.StatusBadRequest)
-		return
-	}
+		doc, err := fitz.NewFromReader(r.Body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		rgba, err := doc.Image(0)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		switch format {
+		case "png":
+			err = png.Encode(w, rgba)
+		case "jpeg":
+			err = jpeg.Encode(w, rgba, &jpeg.Options{
+				Quality: 90,
+			})
+		case "webp":
+			err = webp.Encode(w, rgba, &webp.Options{
+				Quality: 85,
+			})
+		default:
+			http.Error(w, "invalid format", http.StatusBadRequest)
+			return
+		}
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 	}
 
 	w.WriteHeader(http.StatusOK)
