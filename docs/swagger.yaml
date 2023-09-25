@@ -1,0 +1,63 @@
+openapi: 3.0.3
+info:
+  title: Swagger Ganyu - OpenAPI 3.0
+  description: |-
+    This is a simple microservice for on-the-fly PDF conversion to images based on the OpenAPI 3.0 specification.
+    Everything is processed in-memory and no file is written to disk.
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: marco.piovanello@gmail.com
+  license:
+    name: Mozilla Public License 2.0
+    url: https://www.mozilla.org/en-US/MPL/2.0/
+  version: 1.0.11
+externalDocs:
+  description: Find out more this project
+  url: https://github.com/marcopeocchi/pdf-convert-microservice
+servers:
+  - url: /api/v1
+tags:
+  - name: pdf
+    description: PDF to image conversion
+paths:
+  /convert:
+    post:
+      tags:
+        - pdf
+      summary: Converts a PDF to a JPEG image
+      description: Converts a PDF to a JPEG image
+      operationId: convert
+      parameters: 
+        - in: query
+          name: format
+          schema:
+            type: string
+            enum: [jpeg, png, webp]
+          required: true
+          description: Output format of the image
+      requestBody:
+        description: A valid PDF needs to be provided
+        content:
+          application/pdf:
+            schema:
+              type: string
+              format: binary
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid input

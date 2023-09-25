@@ -1,7 +1,7 @@
 FROM golang:bookworm AS build
 
 RUN apt-get update
-RUN apt-get install -y gcc libmupdf-dev binutils-dev
+RUN apt-get install -y gcc libmupdf-dev binutils-dev --no-cache
 
 WORKDIR /usr/src/fuku
 COPY . .
@@ -12,7 +12,7 @@ RUN go build -o fuku *.go
 FROM ubuntu
 
 RUN apt-get update
-RUN apt-get install -y libmupdf-dev
+RUN apt-get install -y libmupdf-dev libwebp --no-cache
 
 WORKDIR /
 COPY --from=build /usr/src/fuku /usr/bin

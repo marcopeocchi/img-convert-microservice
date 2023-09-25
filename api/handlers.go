@@ -1,14 +1,22 @@
-package main
+package api
 
 import (
 	"image/jpeg"
+	"image/png"
 	"net/http"
 
+	"github.com/chai2010/webp"
 	"github.com/karmdip-mi/go-fitz"
 )
 
 func Convert(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+
+	format := r.URL.Query().Get("format")
+	if format == "" {
+		format = "webp"
+		return
+	}
 
 	doc, err := fitz.NewFromReader(r.Body)
 	if err != nil {
@@ -22,9 +30,22 @@ func Convert(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = jpeg.Encode(w, rgba, &jpeg.Options{
-		Quality: 90,
-	})
+	switch format {
+	case "png":
+		err = png.Encode(w, rgba)
+	case "jpeg":
+		err = jpeg.Encode(w, rgba, &jpeg.Options{
+			Quality: 90,
+		})
+	case "webp":
+		err = webp.Encode(w, rgba, &webp.Options{
+			Quality: 85,
+		})
+	default:
+		http.Error(w, "invalid format", http.StatusBadRequest)
+		return
+	}
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
