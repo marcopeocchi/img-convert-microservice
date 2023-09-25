@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Swagger Ganyu - OpenAPI 3.0",
+    "title": "Swagger Fuku - OpenAPI 3.0",
     "description": "This is a simple microservice for on-the-fly PDF conversion to images based on the OpenAPI 3.0 specification.\nEverything is processed in-memory and no file is written to disk.",
     "termsOfService": "http://swagger.io/terms/",
     "contact": {
@@ -35,7 +35,7 @@
           "pdf"
         ],
         "summary": "Converts a the first page of PDF file to an image",
-        "description": "The file sile limit is 10MB",
+        "description": "The file sile limit is 10MB. Read and write timeouts are both set to 5 seconds",
         "operationId": "convert",
         "parameters": [
           {

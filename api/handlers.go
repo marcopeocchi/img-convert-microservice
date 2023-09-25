@@ -30,7 +30,7 @@ func Convert(w http.ResponseWriter, r *http.Request) {
 	default:
 		doc, err := fitz.NewFromReader(r.Body)
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			http.Error(w, "cannot open file", http.StatusInternalServerError)
 			return
 		}
 
