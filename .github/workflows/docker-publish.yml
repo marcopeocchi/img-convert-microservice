@@ -64,4 +64,4 @@ jobs:
           COSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
-        run: cosign sign docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/pdf-convert-microservice:latest
+        run: cosign sign docker.io/marcobaobao/pdf-convert-microservice:latest
