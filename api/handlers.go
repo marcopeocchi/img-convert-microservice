@@ -9,8 +9,12 @@ import (
 	"github.com/karmdip-mi/go-fitz"
 )
 
+const MaxBodySize = 10_000_000
+
 func Convert(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+
+	r.Body = http.MaxBytesReader(w, r.Body, MaxBodySize)
 
 	format := r.URL.Query().Get("format")
 	if format == "" {

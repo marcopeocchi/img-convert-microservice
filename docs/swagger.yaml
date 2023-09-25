@@ -24,8 +24,8 @@ paths:
     post:
       tags:
         - pdf
-      summary: Converts a PDF to a JPEG image
-      description: Converts a PDF to a JPEG image
+      summary: Converts a the first page of PDF file to an image
+      description: The file sile limit is 10MB
       operationId: convert
       parameters: 
         - in: query
