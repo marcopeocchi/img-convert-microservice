@@ -23,3 +23,8 @@ Depening on the supplied params the output image can be either into:
 
 This microservice is based on the OpenAPI 3.0 specification.  
 Launch `http://localhost:8083` to view the related **swagger UI**
+
+
+## Prometheus metrics
+Anonymous metrics are collected.
+Go memory stats, goroutines, `time_per_conversion_ns` and `processed_counter` collected and avaible from `/metrics` endpoint.

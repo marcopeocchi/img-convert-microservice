@@ -13,6 +13,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -52,6 +53,7 @@ func newServer(port int, docs fs.FS) *http.Server {
 		})
 	})
 
+	r.Get("/metrics", promhttp.Handler().ServeHTTP)
 	r.Get("/*", http.FileServer(http.FS(docs)).ServeHTTP)
 
 	return &http.Server{
