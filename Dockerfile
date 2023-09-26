@@ -1,17 +1,16 @@
 FROM golang:bookworm AS build
 
-RUN apt-get update
-RUN apt-get install -y gcc libmupdf-dev binutils-dev libwebp-dev
+RUN apt-get update && apt-get install gcc libvips-dev libavif-dev libheif-dev -y
 
 WORKDIR /usr/src/fuku
 COPY . .
 
 RUN go get
-RUN go build -o fuku *.go
+RUN CGO_ENABLED=1 GOOS=linux go build -ldflags "-s -w" -o fuku main.go
 
-FROM debian:bookworm-slim
+FROM ubuntu
 
-RUN apt-get update && apt-get install -y libmupdf-dev libwebp-dev
+RUN apt-get update && apt-get install libvips-dev libavif-dev libheif-dev -y
 
 WORKDIR /
 COPY --from=build /usr/src/fuku /usr/bin

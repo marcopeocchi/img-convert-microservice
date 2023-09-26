@@ -44,13 +44,27 @@
             "schema": {
               "type": "string",
               "enum": [
+                "avif",
                 "jpeg",
                 "png",
-                "webp"
-              ]
+                "webp",
+                "tiff",
+                "gif"
+              ],
+              "default": "webp"
             },
             "required": true,
             "description": "Output format of the image"
+          },
+          {
+            "in": "query",
+            "name": "quality",
+            "schema": {
+              "type": "integer",
+              "default": 85
+            },
+            "required": true,
+            "description": "Quality of the output image"
           }
         ],
         "requestBody": {
@@ -75,6 +89,18 @@
                   "format": "binary"
                 }
               },
+              "image/avif": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/gif": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
               "image/png": {
                 "schema": {
                   "type": "string",
@@ -82,6 +108,12 @@
                 }
               },
               "image/webp": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "image/tiff": {
                 "schema": {
                   "type": "string",
                   "format": "binary"

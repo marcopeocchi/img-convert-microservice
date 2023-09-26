@@ -1,66 +1,56 @@
 package api
 
 import (
-	"image/jpeg"
-	"image/png"
+	"fuku/internal"
+	"fuku/pkg"
+	"io"
 	"net/http"
+	"strconv"
 
-	"github.com/chai2010/webp"
-	"github.com/karmdip-mi/go-fitz"
+	"github.com/h2non/bimg"
 )
 
-const MaxBodySize = 10_000_000
+const (
+	MAX_BODY_SIZE   = 10_000_000
+	DEFAULT_QUALITY = 85
+)
 
 func Convert(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
-	r.Body = http.MaxBytesReader(w, r.Body, MaxBodySize)
+	r.Body = http.MaxBytesReader(w, r.Body, MAX_BODY_SIZE)
 
 	format := r.URL.Query().Get("format")
-	if format == "" {
-		format = "webp"
+
+	quality, err := strconv.Atoi(r.URL.Query().Get("quality"))
+	if err != nil {
+		quality = DEFAULT_QUALITY
+	}
+
+	imgType, err := pkg.MapStringToBimgType(format)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	select {
-	case <-r.Context().Done():
-		http.Error(w, "context cancelled", http.StatusInternalServerError)
+	buffer, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
-
-	default:
-		doc, err := fitz.NewFromReader(r.Body)
-		if err != nil {
-			http.Error(w, "cannot open file", http.StatusInternalServerError)
-			return
-		}
-
-		rgba, err := doc.Image(0)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		switch format {
-		case "png":
-			err = png.Encode(w, rgba)
-		case "jpeg":
-			err = jpeg.Encode(w, rgba, &jpeg.Options{
-				Quality: 90,
-			})
-		case "webp":
-			err = webp.Encode(w, rgba, &webp.Options{
-				Quality: 85,
-			})
-		default:
-			http.Error(w, "invalid format", http.StatusBadRequest)
-			return
-		}
-
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
 	}
 
+	image := bimg.NewImage(buffer)
+
+	err = internal.Process(r.Context(), w, &internal.ProcessingOptions{
+		Image:   image,
+		ImgType: imgType,
+		Quality: quality,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-Type", pkg.MapImageTypeToContentType(imgType))
 	w.WriteHeader(http.StatusOK)
 }
