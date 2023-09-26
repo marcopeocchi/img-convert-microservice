@@ -28,6 +28,11 @@ func Process(ctx context.Context, w io.Writer, opt *ProcessingOptions) error {
 func process(w io.Writer, opt *ProcessingOptions) error {
 	start := time.Now()
 
+	defer func() {
+		TimePerOpGauge.Set(float64(time.Since(start)))
+		OpsCounter.Inc()
+	}()
+
 	buf, err := opt.Image.Process(bimg.Options{
 		Type:    opt.ImgType,
 		Quality: opt.Quality,
@@ -41,7 +46,5 @@ func process(w io.Writer, opt *ProcessingOptions) error {
 		return err
 	}
 
-	TimePerOpGauge.Set(float64(time.Since(start)))
-	OpsCounter.Inc()
 	return nil
 }
