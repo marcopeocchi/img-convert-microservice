@@ -38,7 +38,7 @@ jobs:
         # 2.2.0
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          username: marcobaobao
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Generate Docker metadata
@@ -46,7 +46,7 @@ jobs:
         # v4.6.0
         uses: docker/metadata-action@v4
         with:
-          images: docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/pdf-convert-microservice
+          images: docker.io/marcobaobao/pdf-convert-microservice
           tags: |
             type=raw,value=latest
 
