@@ -9,10 +9,9 @@ COPY . .
 RUN go get
 RUN go build -o fuku *.go
 
-FROM ubuntu
+FROM debian:bookworm-slim
 
-RUN apt-get update
-RUN apt-get install -y libmupdf-dev libwebp-dev
+RUN apt-get update && apt-get install -y libmupdf-dev libwebp-dev
 
 WORKDIR /
 COPY --from=build /usr/src/fuku /usr/bin
