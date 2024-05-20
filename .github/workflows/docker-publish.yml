@@ -24,7 +24,7 @@ jobs:
         # v3.1.2
         uses: sigstore/cosign-installer@v3
         with:
-          cosign-release: 'v1.13.1'
+          cosign-release: 'v1.13.6'
 
       - name: Set up QEMU for ARM emulation
         # v2.2.0
