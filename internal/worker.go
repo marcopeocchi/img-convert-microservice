@@ -1,8 +1,8 @@
 package internal
 
 type Worker struct {
-	requests chan Request // downloads to do
-	pending  int          // downloads pending
+	requests chan Request // conversions to do
+	pending  int          // conversions pending
 	index    int          // index in the heap
 }
 

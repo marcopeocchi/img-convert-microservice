@@ -1,5 +1,6 @@
 package internal
 
+// Pool implements heap.Interface interface
 type Pool []*Worker
 
 func (h Pool) Len() int           { return len(h) }
