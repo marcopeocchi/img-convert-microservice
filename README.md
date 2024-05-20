@@ -9,7 +9,7 @@ docker pull marcobaobao/pdf-convert-microservice
 ## Installation
 
 ```sh
-docker run -d -p 8083:8083 --restart=unless-stopped --name pdf-microservice marcobaobao/pdf-convert-microservice
+docker run -d -p 8080:8080 --restart=unless-stopped --name pdf-microservice marcobaobao/pdf-convert-microservice
 ```
 
 ## How it works
@@ -18,11 +18,12 @@ Depening on the supplied params the output image can be either into:
 - jpeg
 - png
 - webp
+- avif
 
 ## OpenAPI 3.0
 
 This microservice is based on the OpenAPI 3.0 specification.  
-Launch `http://localhost:8083` to view the related **swagger UI**
+Launch `http://localhost:8080` to view the related **swagger UI**
 
 
 ## Prometheus metrics
