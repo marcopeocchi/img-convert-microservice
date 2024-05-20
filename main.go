@@ -5,9 +5,11 @@ import (
 	"flag"
 	"fmt"
 	"fuku/api"
+	"fuku/internal"
 	"io/fs"
 	"net/http"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -38,6 +40,11 @@ func main() {
 }
 
 func newServer(port int, docs fs.FS) *http.Server {
+	workChan := make(chan internal.Request)
+
+	loadBalancer := internal.NewLoadBalancer(runtime.NumCPU())
+	go loadBalancer.Balance(workChan)
+
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
@@ -49,7 +56,7 @@ func newServer(port int, docs fs.FS) *http.Server {
 
 	r.Route("/api", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
-			r.Post("/convert", api.Convert)
+			r.Post("/convert", api.Convert(workChan))
 		})
 	})
 

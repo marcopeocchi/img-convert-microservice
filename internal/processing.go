@@ -1,9 +1,6 @@
 package internal
 
 import (
-	"context"
-	"errors"
-	"io"
 	"time"
 
 	"github.com/h2non/bimg"
@@ -15,17 +12,7 @@ type ProcessingOptions struct {
 	Quality int
 }
 
-func Process(ctx context.Context, w io.Writer, opt *ProcessingOptions) error {
-	select {
-	case <-ctx.Done():
-		return errors.New("context cancelled")
-
-	default:
-		return process(w, opt)
-	}
-}
-
-func process(w io.Writer, opt *ProcessingOptions) error {
+func Process(opt *ProcessingOptions) ([]byte, error) {
 	start := time.Now()
 
 	defer func() {
@@ -38,13 +25,8 @@ func process(w io.Writer, opt *ProcessingOptions) error {
 		Quality: opt.Quality,
 	})
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = w.Write(buf)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return buf, nil
 }
