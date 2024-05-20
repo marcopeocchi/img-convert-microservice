@@ -2,6 +2,7 @@ package internal
 
 import (
 	"container/heap"
+	"log/slog"
 )
 
 type LoadBalancer struct {
@@ -21,6 +22,8 @@ func NewLoadBalancer(numWorker int) *LoadBalancer {
 		}
 		go w.Work(doneChan)
 		pool = append(pool, w)
+
+		slog.Info("spawned worker", slog.Int("index", i))
 	}
 
 	return &LoadBalancer{
@@ -42,13 +45,22 @@ func (b *LoadBalancer) Balance(work chan Request) {
 
 func (b *LoadBalancer) dispatch(req Request) {
 	w := heap.Pop(&b.pool).(*Worker)
+
 	w.requests <- req
 	w.pending++
+
+	slog.Info("dispatched work", slog.Int("worker", w.index))
+	slog.Info("pending works", slog.Int("worker", w.index), slog.Int("pending", w.pending))
+
 	heap.Push(&b.pool, w)
 }
 
 func (b *LoadBalancer) completed(w *Worker) {
+	slog.Info("completed work", slog.Int("worker", w.index))
+	slog.Info("pending works", slog.Int("worker", w.index), slog.Int("pending", w.pending))
+
 	w.pending--
+
 	heap.Remove(&b.pool, w.index)
 	heap.Push(&b.pool, w)
 }
