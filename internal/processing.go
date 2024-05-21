@@ -12,7 +12,7 @@ type ProcessingOptions struct {
 	Quality int
 }
 
-func Process(opt *ProcessingOptions) ([]byte, error) {
+func Process(opt *ProcessingOptions) (*[]byte, error) {
 	start := time.Now()
 
 	defer func() {
@@ -28,5 +28,5 @@ func Process(opt *ProcessingOptions) ([]byte, error) {
 		return nil, err
 	}
 
-	return buf, nil
+	return &buf, nil
 }

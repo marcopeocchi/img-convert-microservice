@@ -18,7 +18,7 @@ const (
 func Convert(work chan<- internal.Request) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
-		resultChan := make(chan []byte)
+		resultChan := make(chan *[]byte)
 
 		r.Body = http.MaxBytesReader(w, r.Body, MAX_BODY_SIZE)
 
@@ -34,7 +34,7 @@ func Convert(work chan<- internal.Request) http.HandlerFunc {
 			return
 		}
 
-		req := internal.NewRequest(resultChan, func() []byte {
+		req := internal.NewRequest(resultChan, func() *[]byte {
 			buffer, err := io.ReadAll(r.Body)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -60,9 +60,10 @@ func Convert(work chan<- internal.Request) http.HandlerFunc {
 		res := <-resultChan
 		if res == nil {
 			http.Error(w, "", http.StatusInternalServerError)
+			return
 		}
 
-		w.Write(res)
+		w.Write(*res)
 		w.Header().Add("Content-Type", pkg.MapImageTypeToContentType(imgType))
 		w.WriteHeader(http.StatusOK)
 	}

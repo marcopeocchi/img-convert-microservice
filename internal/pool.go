@@ -1,6 +1,6 @@
 package internal
 
-// Pool implements heap.Interface interface
+// Pool implements heap.Interface interface as a standard priority queue
 type Pool []*Worker
 
 func (h Pool) Len() int           { return len(h) }
@@ -20,6 +20,7 @@ func (h *Pool) Pop() any {
 	old := *h
 	n := len(old)
 	x := old[n-1]
+	old[n-1] = nil
 	*h = old[0 : n-1]
 	return x
 }
