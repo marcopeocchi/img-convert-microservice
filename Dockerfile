@@ -15,6 +15,6 @@ RUN apk update && apk add vips-dev poppler-dev libavif-dev libheif-dev --no-cach
 WORKDIR /
 COPY --from=build /usr/src/fuku /usr/bin
 
-EXPOSE 8083
+EXPOSE 8080
 
-ENTRYPOINT [ "fuku", "-p", "8083" ]
+ENTRYPOINT [ "fuku", "-p", "8080" ]
