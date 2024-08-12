@@ -1,24 +1,25 @@
-# pdf-covert-microservice
+# img-convert-microservice
 
-This is a simple microservice for on-the-fly PDF conversion to images.  
+This is a simple microservice for on-the-fly image or PDF conversion.  
 Everything is processed in-memory and no file is written to disk.
 
 ```sh
-docker pull marcobaobao/pdf-convert-microservice
+docker pull marcobaobao/img-convert-microservice
 ```
 ## Installation
 
 ```sh
-docker run -d -p 8080:8080 --restart=unless-stopped --name pdf-microservice marcobaobao/pdf-convert-microservice
+docker run -d -p 8080:8080 --restart=unless-stopped --name img-conv-microservice marcobaobao/img-convert-microservice
 ```
 
 ## How it works
-User supplies a PDF as a blob, the services elaborates the image of the **first** page of the document.
+User supplies an image or PDF as a blob (the services elaborates the image of the **first** page of the document).
 Depening on the supplied params the output image can be either into:
 - jpeg
 - png
 - webp
 - avif
+- gif
 
 ## OpenAPI 3.0
 

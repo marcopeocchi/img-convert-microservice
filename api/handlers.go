@@ -22,10 +22,26 @@ func Convert(work chan<- internal.Request) http.HandlerFunc {
 
 		r.Body = http.MaxBytesReader(w, r.Body, MAX_BODY_SIZE)
 
-		format := r.URL.Query().Get("format")
-		quality, err := strconv.Atoi(r.URL.Query().Get("quality"))
+		var (
+			format     = r.URL.Query().Get("f")
+			qualityStr = r.URL.Query().Get("q")
+			widthStr   = r.URL.Query().Get("w")
+			heigthStr  = r.URL.Query().Get("h")
+		)
+
+		quality, err := strconv.Atoi(qualityStr)
 		if err != nil {
 			quality = DEFAULT_QUALITY
+		}
+
+		width, err := strconv.Atoi(widthStr)
+		if err != nil {
+			width = 0
+		}
+
+		heigth, err := strconv.Atoi(heigthStr)
+		if err != nil {
+			heigth = 0
 		}
 
 		imgType, err := pkg.MapStringToBimgType(format)
@@ -47,6 +63,8 @@ func Convert(work chan<- internal.Request) http.HandlerFunc {
 				Image:   image,
 				ImgType: imgType,
 				Quality: quality,
+				Width:   width,
+				Height:  heigth,
 			})
 			if err != nil {
 				return nil
@@ -58,8 +76,10 @@ func Convert(work chan<- internal.Request) http.HandlerFunc {
 		work <- req
 
 		res := <-resultChan
+		close(resultChan)
+
 		if res == nil {
-			http.Error(w, "", http.StatusInternalServerError)
+			http.Error(w, "file conversion failed", http.StatusInternalServerError)
 			return
 		}
 

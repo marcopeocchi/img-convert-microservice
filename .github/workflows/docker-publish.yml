@@ -47,7 +47,7 @@ jobs:
         # v4.6.0
         uses: docker/metadata-action@v4
         with:
-          images: docker.io/marcobaobao/pdf-convert-microservice
+          images: docker.io/marcobaobao/img-convert-microservice
           tags: |
             type=raw,value=latest
 
@@ -67,4 +67,4 @@ jobs:
           COSIGN_EXPERIMENTAL: "true"
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
-        run: cosign sign docker.io/marcobaobao/pdf-convert-microservice@${{ steps.build-and-push.outputs.digest }}
+        run: cosign sign docker.io/marcobaobao/img-convert-microservice@${{ steps.build-and-push.outputs.digest }}

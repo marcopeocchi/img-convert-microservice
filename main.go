@@ -8,7 +8,6 @@ import (
 	"fuku/internal"
 	"io/fs"
 	"net/http"
-	"os"
 	"runtime"
 	"time"
 
@@ -31,8 +30,7 @@ func main() {
 
 	swagger, err := fs.Sub(docs, "static")
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(0)
+		panic(err)
 	}
 
 	srv := newServer(port, swagger)

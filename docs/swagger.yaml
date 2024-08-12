@@ -13,7 +13,7 @@ info:
   version: 1.0.11
 externalDocs:
   description: Find out more this project
-  url: https://github.com/marcopeocchi/pdf-convert-microservice
+  url: https://github.com/marcopeocchi/img-convert-microservice
 servers:
 - url: "/api/v1"
 tags:
@@ -54,6 +54,10 @@ paths:
         description: A valid PDF needs to be provided
         content:
           application/pdf:
+            schema:
+              type: string
+              format: binary
+          image/jpeg:
             schema:
               type: string
               format: binary
